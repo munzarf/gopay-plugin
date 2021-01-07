@@ -30,6 +30,7 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface
 
         /** @var OrderInterface $order */
         $order = $request->getFirstModel()->getOrder();
+        $model['items'] = $order->getItems();
         $model['customer'] = $order->getCustomer();
         $model['locale'] = $this->fallbackLocaleCode($order->getLocaleCode());
 

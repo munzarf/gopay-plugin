@@ -18,6 +18,8 @@ use Payum\Core\Payum;
 use Payum\Core\Storage\IdentityInterface;
 use RuntimeException;
 use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Component\Core\Model\OrderItem;
+use Symfony\Component\VarDumper\VarDumper;
 use Webmozart\Assert\Assert;
 
 class GoPayAction implements ApiAwareInterface, ActionInterface
@@ -149,16 +151,20 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
 
     private function resolveProducts(CoreArrayObject $model): array
     {
-        if (!array_key_exists('items', $model) || count($model['items']) === 0) {
-            return [
-                [
-                    'name' => $model['description'],
-                    'amount' => $model['totalAmount']
-                ]
+
+        $items = [];
+        /** @var OrderItem $item */
+        foreach($model['items'] as $item) {
+            $items[] = [
+                'type' => 'ITEM',
+                'name' => $item->getProductName(),
+                'product_url' => '',
+                'count' => $item->getQuantity(),
+                'amount' => $item->getTotal()
             ];
         }
 
-        return [];
+        return $items;
     }
 
     private function createNotifyToken(string $gatewayName, IdentityInterface $model): TokenInterface

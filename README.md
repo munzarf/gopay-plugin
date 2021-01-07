@@ -12,7 +12,7 @@ Until pull request is merged, require it this way:
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/bratiask/gopay-plugin"
+            "url": "https://github.com/munzarf/gopay-plugin"
         }
     ],
     "require": {
