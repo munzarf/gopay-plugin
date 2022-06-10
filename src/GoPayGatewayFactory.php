@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Bratiask\GoPayPlugin;
@@ -6,10 +7,10 @@ namespace Bratiask\GoPayPlugin;
 use Bratiask\GoPayPlugin\Action\CaptureAction;
 use Bratiask\GoPayPlugin\Action\ConvertPaymentAction;
 use Bratiask\GoPayPlugin\Action\StatusAction;
+use GoPay\Definition\Language;
+use GoPay\Definition\TokenScope;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory;
-use GoPay\Definition\TokenScope;
-use GoPay\Definition\Language;
 
 class GoPayGatewayFactory extends GatewayFactory
 {
@@ -21,7 +22,7 @@ class GoPayGatewayFactory extends GatewayFactory
 
             'payum.action.capture' => new CaptureAction(),
             'payum.action.convert_payment' => new ConvertPaymentAction(),
-            'payum.action.status' => new StatusAction()
+            'payum.action.status' => new StatusAction(),
         ]);
 
         if (false == $config['payum.api']) {
@@ -29,7 +30,7 @@ class GoPayGatewayFactory extends GatewayFactory
                 'goid' => '',
                 'clientId' => '',
                 'clientSecret' => '',
-                'isProductionMode' => false
+                'isProductionMode' => false,
             ];
             $config->defaults($config['payum.default_options']);
 
@@ -37,6 +38,7 @@ class GoPayGatewayFactory extends GatewayFactory
 
             $config['payum.api'] = function (ArrayObject $config) {
                 $config->validateNotEmpty($config['payum.required_options']);
+
                 return [
                     'goid' => $config['goid'],
                     'clientId' => $config['clientId'],
@@ -44,7 +46,7 @@ class GoPayGatewayFactory extends GatewayFactory
                     'isProductionMode' => $config['isProductionMode'],
                     'scope' => TokenScope::ALL,
                     'language' => Language::ENGLISH,
-                    'timeout' => 30
+                    'timeout' => 30,
                 ];
             };
         }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Bratiask\GoPayPlugin\Action;
@@ -21,7 +22,8 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
     use GatewayAwareTrait;
 
     protected $gopayApi;
-    private $api = [];
+
+    private array $api = [];
 
     public function __construct(GoPayApiInterface $gopayApi)
     {
@@ -30,7 +32,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
 
     public function execute($request)
     {
-        /** @var $request Notify */
+        /** @var Notify $request */
         RequestNotSupportedException::assertSupports($this, $request);
 
         /** @var PaymentInterface $payment */
@@ -71,7 +73,6 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
             }
 
             throw new HttpResponse('SUCCESS');
-
         } catch (Exception $e) {
             throw new HttpResponse($e->getMessage());
         }
@@ -84,7 +85,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
 
     public function setApi($api): void
     {
-        if (!is_array($api)) {
+        if (! is_array($api)) {
             throw new UnsupportedApiException('Not supported.');
         }
 

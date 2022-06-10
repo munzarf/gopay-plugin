@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Bratiask\GoPayPlugin\Api;
@@ -21,7 +22,7 @@ final class GoPayApi implements GoPayApiInterface
             'clientId' => $clientId,
             'clientSecret' => $clientSecret,
             'isProductionMode' => $isProductionMode,
-            'language' => $language
+            'language' => $language,
         ]);
     }
 

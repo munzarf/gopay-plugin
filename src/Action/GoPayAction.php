@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Bratiask\GoPayPlugin\Action;
@@ -11,21 +12,22 @@ use Payum\Core\ApiAwareInterface;
 use Payum\Core\Bridge\Spl\ArrayObject as CoreArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Exception\UnsupportedApiException;
+use Payum\Core\Payum;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Request\Generic;
 use Payum\Core\Security\TokenInterface;
-use Payum\Core\Payum;
 use Payum\Core\Storage\IdentityInterface;
 use RuntimeException;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderItem;
-use Symfony\Component\VarDumper\VarDumper;
 use Webmozart\Assert\Assert;
 
 class GoPayAction implements ApiAwareInterface, ActionInterface
 {
     protected $gopayApi;
-    private $api = [];
+
+    private array $api = [];
+
     private $payum;
 
     public function __construct(GoPayApiInterface $gopayApi, Payum $payum)
@@ -98,7 +100,7 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
 
     public function setApi($api): void
     {
-        if (!is_array($api)) {
+        if (! is_array($api)) {
             throw new UnsupportedApiException('Not supported.');
         }
 
@@ -135,9 +137,9 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
         );
 
         $payerContact = [
-            'email' => (string)$customer->getEmail(),
-            'first_name' => (string)$customer->getFirstName(),
-            'last_name' => (string)$customer->getLastName(),
+            'email' => (string) $customer->getEmail(),
+            'first_name' => (string) $customer->getFirstName(),
+            'last_name' => (string) $customer->getLastName(),
         ];
 
         $order['payer']['contact'] = $payerContact;
@@ -151,16 +153,15 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
 
     private function resolveProducts(CoreArrayObject $model): array
     {
-
         $items = [];
         /** @var OrderItem $item */
-        foreach($model['items'] as $item) {
+        foreach ($model['items'] as $item) {
             $items[] = [
                 'type' => 'ITEM',
                 'name' => $item->getProductName(),
                 'product_url' => '',
                 'count' => $item->getQuantity(),
-                'amount' => $item->getTotal()
+                'amount' => $item->getTotal(),
             ];
         }
 

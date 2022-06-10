@@ -1,16 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Bratiask\GoPayPlugin\Action;
 
+use Bratiask\GoPayPlugin\Api\GoPayApiInterface;
+use Payum\Core\Action\ActionInterface;
 use Payum\Core\Bridge\Spl\ArrayObject;
+use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\GatewayAwareInterface;
 use Payum\Core\GatewayAwareTrait;
-use Payum\Core\Action\ActionInterface;
-use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Model\PaymentInterface;
 use Payum\Core\Request\Convert;
-use Bratiask\GoPayPlugin\Api\GoPayApiInterface;
 
 final class ConvertPaymentAction implements ActionInterface, GatewayAwareInterface
 {
@@ -36,7 +37,7 @@ final class ConvertPaymentAction implements ActionInterface, GatewayAwareInterfa
         $details['customerIp'] = $this->customerIp();
         $details['status'] = GoPayApiInterface::CREATED;
 
-        $request->setResult((array)$details);
+        $request->setResult((array) $details);
     }
 
     public function supports($request): bool
