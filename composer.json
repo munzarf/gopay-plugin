@@ -1,0 +1,16 @@
+{
+    "name": "bratiask/gopay-plugin",
+    "type": "sylius-plugin",
+    "description": "GoPay payment gateway plugin for Sylius applications.",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "sylius/sylius": "^1.12",
+        "gopay/payments-sdk-php": "^1.4.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bratiask\\GoPayPlugin\\": "src/"
+        }
+    }
+}
