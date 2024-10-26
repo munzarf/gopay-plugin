@@ -7,6 +7,7 @@ namespace Bratiask\GoPayPlugin\Action;
 use ArrayObject;
 use Bratiask\GoPayPlugin\Api\GoPayApiInterface;
 use Exception;
+use GoPay\Definition\Language;
 use Payum\Core\Action\ActionInterface;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Exception\RequestNotSupportedException;
@@ -46,7 +47,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
             $this->api['clientId'],
             $this->api['clientSecret'],
             $this->api['isProductionMode'],
-            $model['locale']
+            $model['locale'] ?? Language::CZECH
         );
 
         try {
