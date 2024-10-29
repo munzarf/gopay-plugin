@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Bratiask\GoPayPlugin\Api;
 
+use Bratiask\GoPayPlugin\Constant\Config;
 use GoPay\Api;
 use GoPay\Http\Response;
 use GoPay\Payments;
 
 final class GoPayApi implements GoPayApiInterface
 {
-    /**
-     * @var Payments
-     */
-    private $gopay;
+    private Payments $gopay;
 
     public function authorize(string $goId, string $clientId, string $clientSecret, bool $isProductionMode, string $language): void
     {
@@ -22,6 +20,7 @@ final class GoPayApi implements GoPayApiInterface
             'clientId' => $clientId,
             'clientSecret' => $clientSecret,
             'isProductionMode' => $isProductionMode,
+            'gatewayUrl' => $isProductionMode ? Config::PRODUCTION_ENV : Config::SANDBOX_ENV,
             'language' => $language,
         ]);
     }

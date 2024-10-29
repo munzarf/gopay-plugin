@@ -21,28 +21,23 @@ class StatusAction implements ActionInterface
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
+        /** @var ?string $status */
         $status = $model['gopayStatus'] ?? null;
 
-        if ((null === $status || GoPayApiInterface::CREATED === $status) && false === isset($model['orderId'])) {
+        if ((null === $status || GoPayApiInterface::CREATED === $status) && !isset($model['orderId'])) {
             $request->markNew();
-
-            return;
-        }
-
-        if (GoPayApiInterface::CANCELED === $status) {
-            $request->markCanceled();
-
-            return;
-        }
-
-        if (GoPayApiInterface::TIMEOUTED === $status) {
-            $request->markCanceled();
 
             return;
         }
 
         if (GoPayApiInterface::PAID === $status) {
             $request->markCaptured();
+
+            return;
+        }
+
+        if (GoPayApiInterface::CANCELED === $status || GoPayApiInterface::TIMEOUTED === $status) {
+            $request->markCanceled();
 
             return;
         }

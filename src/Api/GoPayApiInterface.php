@@ -18,6 +18,9 @@ interface GoPayApiInterface
 
     public function authorize(string $goId, string $clientId, string $clientSecret, bool $isProductionMode, string $language): void;
 
+    /**
+     * @param array<string, mixed> $order
+     */
     public function create(array $order): Response;
 
     public function retrieve(int $paymentId): Response;

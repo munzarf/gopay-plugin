@@ -7,6 +7,7 @@ namespace Bratiask\GoPayPlugin;
 use Bratiask\GoPayPlugin\Action\CaptureAction;
 use Bratiask\GoPayPlugin\Action\ConvertPaymentAction;
 use Bratiask\GoPayPlugin\Action\StatusAction;
+use Bratiask\GoPayPlugin\Constant\Config;
 use GoPay\Definition\Language;
 use GoPay\Definition\TokenScope;
 use Payum\Core\Bridge\Spl\ArrayObject;
@@ -25,18 +26,19 @@ class GoPayGatewayFactory extends GatewayFactory
             'payum.action.status' => new StatusAction(),
         ]);
 
-        if (false == $config['payum.api']) {
+        if (!$config['payum.api']) {
             $config['payum.default_options'] = [
                 'goid' => '',
                 'clientId' => '',
                 'clientSecret' => '',
                 'isProductionMode' => false,
+                'gatewayUrl' => Config::SANDBOX_ENV,
             ];
             $config->defaults($config['payum.default_options']);
 
             $config['payum.required_options'] = ['goid', 'clientId', 'clientSecret'];
 
-            $config['payum.api'] = function (ArrayObject $config) {
+            $config['payum.api'] = function (ArrayObject $config): array {
                 $config->validateNotEmpty($config['payum.required_options']);
 
                 return [
@@ -44,6 +46,7 @@ class GoPayGatewayFactory extends GatewayFactory
                     'clientId' => $config['clientId'],
                     'clientSecret' => $config['clientSecret'],
                     'isProductionMode' => $config['isProductionMode'],
+                    'gatewayUrl' => $config['isProductionMode'] ? Config::PRODUCTION_ENV : Config::SANDBOX_ENV,
                     'scope' => TokenScope::ALL,
                     'language' => Language::ENGLISH,
                     'timeout' => 30,

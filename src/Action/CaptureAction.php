@@ -14,6 +14,7 @@ use Payum\Core\GatewayAwareTrait;
 use Payum\Core\Request\Capture;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\PaymentInterface;
 
 final class CaptureAction implements ActionInterface, GatewayAwareInterface
 {
@@ -25,17 +26,24 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
-
         $model = $request->getModel();
-        ArrayObject::ensureArrayObject($model);
+        $model = ArrayObject::ensureArrayObject($model);
+
+        /** @var PaymentInterface $payment */
+        $payment = $request->getFirstModel();
 
         /** @var OrderInterface $order */
-        $order = $request->getFirstModel()->getOrder();
+        $order = $payment->getOrder();
+        /** @var TokenInterface $token */
+        $token = $request->getToken();
+        assert($order instanceof OrderInterface);
+        assert($token instanceof TokenInterface);
+
         $model['items'] = $order->getItems();
         $model['customer'] = $order->getCustomer();
-        $model['locale'] = $this->fallbackLocaleCode($order->getLocaleCode());
+        $model['locale'] = $this->fallbackLocaleCode($order->getLocaleCode() ?? '');
 
-        $this->gateway->execute($this->goPayAction($request->getToken(), $model));
+        $this->gateway->execute($this->goPayAction($token, $model));
     }
 
     public function supports($request): bool
