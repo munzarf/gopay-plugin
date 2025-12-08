@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "sylius/sylius": "^1.12",
+        "sylius/sylius": "^1.14",
         "gopay/payments-sdk-php": "^1.10"
     },
     "autoload": {
