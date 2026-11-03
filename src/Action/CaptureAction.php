@@ -21,11 +21,12 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface
     use GatewayAwareTrait;
 
     /**
-     * @param Capture $request
+     * @param mixed $request
      */
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
+        assert($request instanceof Capture);
         $model = $request->getModel();
         $model = ArrayObject::ensureArrayObject($model);
 
@@ -36,8 +37,6 @@ final class CaptureAction implements ActionInterface, GatewayAwareInterface
         $order = $payment->getOrder();
         /** @var TokenInterface $token */
         $token = $request->getToken();
-        assert($order instanceof OrderInterface);
-        assert($token instanceof TokenInterface);
 
         $model['items'] = $order->getItems();
         $model['customer'] = $order->getCustomer();

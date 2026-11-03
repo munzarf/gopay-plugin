@@ -14,11 +14,12 @@ use Payum\Core\Request\GetStatusInterface;
 class StatusAction implements ActionInterface
 {
     /**
-     * @param GetStatusInterface $request
+     * @param mixed $request
      */
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
+        assert($request instanceof GetStatusInterface);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
         /** @var ?string $status */

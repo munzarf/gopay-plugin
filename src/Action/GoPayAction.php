@@ -44,11 +44,12 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
     }
 
     /**
-     * @param Generic $request
+     * @param mixed $request
      */
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
+        assert($request instanceof Generic);
         $model = CoreArrayObject::ensureArrayObject($request->getModel());
 
         $goId = $this->api['goid'];
@@ -78,16 +79,13 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
             }
 
             throw new RuntimeException('GoPay error: ' . $response->__toString());
-        } else {
-            $response = $gopayApi->retrieve($paymentId);
-
-            $model['gopayStatus'] = $response->json['state'];
-            if (GoPayApiInterface::CREATED === $response->json['state']) {
-                $model['gopayStatus'] = GoPayApiInterface::CANCELED;
-            }
-
-            $request->setModel($model);
         }
+        $response = $gopayApi->retrieve($paymentId);
+        $model['gopayStatus'] = $response->json['state'];
+        if (GoPayApiInterface::CREATED === $response->json['state']) {
+            $model['gopayStatus'] = GoPayApiInterface::CANCELED;
+        }
+        $request->setModel($model);
     }
 
     public function supports($request): bool
@@ -96,7 +94,7 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
     }
 
     /**
-     * @param ApiConfig $api
+     * @param mixed $api tvar zaručuje payum.api v GoPayGatewayFactory
      */
     public function setApi($api): void
     {
@@ -104,7 +102,9 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
             throw new UnsupportedApiException('Not supported.');
         }
 
-        $this->api = $api;
+        /** @var ApiConfig $config */
+        $config = $api;
+        $this->api = $config;
     }
 
     public function setGoPayApi(GoPayApiInterface $gopayApi): void
@@ -127,7 +127,6 @@ class GoPayAction implements ApiAwareInterface, ActionInterface
         $order['order_number'] = $model['extOrderId'];
         $order['lang'] = $model['locale'];
 
-        /** @var CustomerInterface $customer */
         $customer = $model['customer'];
 
         Assert::isInstanceOf(

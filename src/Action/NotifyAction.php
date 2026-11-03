@@ -34,13 +34,13 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
     }
 
     /**
-     * @param Notify $request
+     * @param mixed $request
      */
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
+        assert($request instanceof Notify);
 
-        /** @var PaymentInterface $payment */
         $payment = $request->getFirstModel();
         Assert::isInstanceOf($payment, PaymentInterface::class);
         $model = CoreArrayObject::ensureArrayObject($request->getModel());
@@ -79,7 +79,7 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
     }
 
     /**
-     * @param ApiConfig $api
+     * @param mixed $api tvar zaručuje payum.api v GoPayGatewayFactory
      */
     public function setApi($api): void
     {
@@ -87,6 +87,8 @@ final class NotifyAction implements ActionInterface, ApiAwareInterface
             throw new UnsupportedApiException('Not supported.');
         }
 
-        $this->api = $api;
+        /** @var ApiConfig $config */
+        $config = $api;
+        $this->api = $config;
     }
 }

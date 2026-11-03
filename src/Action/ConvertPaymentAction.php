@@ -18,11 +18,12 @@ final class ConvertPaymentAction implements ActionInterface, GatewayAwareInterfa
     use GatewayAwareTrait;
 
     /**
-     * @param Convert $request
+     * @param mixed $request
      */
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
+        assert($request instanceof Convert);
 
         /** @var PaymentInterface $payment */
         $payment = $request->getSource();
@@ -47,6 +48,8 @@ final class ConvertPaymentAction implements ActionInterface, GatewayAwareInterfa
 
     private function customerIp(): ?string
     {
-        return $_SERVER['REMOTE_ADDR'] ?? null;
+        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+
+        return is_string($ip) ? $ip : null;
     }
 }
